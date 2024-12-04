@@ -22,6 +22,13 @@ const resetFilter = () => {
   sort.value = 'name';
   filter()
 }
+const goto = (page: number) => {
+  page = (page < 1) ? 1 : page;
+  page = (page > filmStore.totalPages) ? filmStore.totalPages : page;
+  filmStore.currentPage = page;
+  filmStore.fetchFilms();
+}
+
 </script>
 
 <template>
@@ -100,11 +107,39 @@ const resetFilter = () => {
 
   <nav class="d-flex justify-content-center mt-4" aria-label="Page navigation example">
     <ul class="pagination">
-      <li class="page-item"><a class="page-link" href="#"> &laquo; </a></li>
-      <li class="page-item"><a class="page-link" href="#">1</a></li>
-      <li class="page-item"><a class="page-link" href="#">2</a></li>
-      <li class="page-item"><a class="page-link" href="#">3</a></li>
-      <li class="page-item"><a class="page-link" href="#"> &raquo; </a></li>
+      <li
+          :class="{'disabled': filmStore.currentPage === 1}"
+          class="page-item"
+      >
+        <a
+            @click.prevent = "goto(filmStore.currentPage - 1)"
+            class="page-link"
+            href="#"> Previous </a>
+      </li>
+
+
+      <li
+      v-for="page in filmStore.totalPages"
+      :key="page"
+      class="page-item"
+      :class="{'active': page === filmStore.currentPage}"
+        >
+        <a
+            @click.prevent="goto(page)"
+            class="page-link"
+            href="#">{{ page }}</a>
+      </li>
+
+
+      <li
+          :class="{'disabled': filmStore.currentPage === 2}"
+          class="page-item"
+      >
+        <a
+            @click.prevent = "goto(filmStore.currentPage + 1)"
+            class="page-link"
+            href="#"> next </a>
+      </li>
     </ul>
   </nav>
 </template>
